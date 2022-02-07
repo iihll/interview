@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      class Watcher {}
+
+      class Dep {
+        static target
+
+        constructor() {
+          this.subs = []
+        }
+        addWatcher(watch) {
+          this.subs.push(watch)
+        }
+        notify() {
+          console.log(this.subs)
+          // this.subs.map((item) => {
+          //   item.updater()
+          // })
+        }
+      }
+
+      const obj = {
+        msg: 'hello',
+      }
+
+      function reactive(obj, key, value) {
+        if (!value) {
+          value = obj[key]
+        }
+
+        const dep = new Dep()
+
+        Object.defineProperty(obj, 'msg', {
+          get() {
+            console.log('run getter')
+            Dep.target && dep.addWatcher(Dep.target)
+            return value
+          },
+          set(newVal) {
+            console.log('run setter')
+            if (newVal !== value) {
+              value = newVal
+              dep.notify()
+            }
+          },
+        })
+      }
+
+      reactive(obj, 'msg')
+    </script>
+  </body>
+</html>

@@ -78,12 +78,12 @@ export default {
     exclude: patternTypes,
     max: [String, Number],
   },
-  // data() {
-  //   return {
-  //     cache: Object.create(null),
-  //     keys: [],
-  //   }
-  // },
+  data() {
+    return {
+      // cache: Object.create(null),
+      // keys: [],
+    }
+  },
   methods: {
     cacheVNode() {
       const { cache, keys, vnodeToCache, keyToCache } = this
@@ -96,6 +96,7 @@ export default {
           componentInstance,
         }
         keys.push(keyToCache)
+        // 判断 prop max 超出则删除缓存列表中的第一个
         if (this.max && keys.length > parseInt(this.max)) {
           pruneCacheEntry(cache, keys[0], keys, this._vnode)
         }
