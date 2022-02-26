@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div class="box-1">box-1</div>
+  <div class="box-2">box-2</div>
+
+  <script>
+    let obj = {}
+
+    const Dep = {
+      subs: [],
+      listen: function(key, fn) {
+        (this.subs[key] || (this.subs[key] = [])).push(fn)
+      },
+      trigger: function() {
+        const key = Array.prototype.shift.call(arguments)
+        const fns = this.subs[key]
+        if(!fns || fns.length === 0) {
+          return false
+        }
+        // for(let i = 0, fn; fn = fns[i++];) {
+        //   fn.apply(this, arguments)
+        // }
+        console.log('arguments', arguments)
+        console.log('this', this)
+        for(let i = 0; i < fns.length; i++) {
+          const fn = fns[i]
+          fn.apply(this, arguments)
+        }
+      }
+    }
+
+    const dataHi = function({ data, tag, key, selector }) {
+      let value = ''
+      let el = document.querySelector(selector)
+
+      Object.defineProperty(data, key, {
+        get: function() {
+          console.log('getter')
+          return value
+        },
+        set: function(newVal) {
+          console.log('setter')
+          value = newVal
+          Dep.trigger(tag, newVal)
+        }
+      })
+
+      Dep.listen(tag, function(text) {
+        el.innerHTML = text
+      })
+    }
+
+    dataHi({
+      data: obj,
+      tag: 'view-1',
+      key: 'one',
+      selector: '.box-1'
+    })
+
+    dataHi({
+      data: obj,
+      tag: 'view-2',
+      key: 'two',
+      selector: '.box-2'
+    })
+
+    obj.one = 'test'
+  </script>
+</body>
+</html>
