@@ -155,8 +155,10 @@ class Promise {
     let times = 0
     return new Promise((resolve, reject) => {
       function processResult(data, index) {
-        result[index] = data // 映射结果
-        if (++times == promises.length) {
+        result[index] = data
+        times += 1
+        // 计数器等于数组长度表示所有 promise 都已 resolve, 则可以 resolve
+        if (times == promises.length) {
           resolve(result)
         }
       }
@@ -164,6 +166,7 @@ class Promise {
         let promise = promises[i]
         Promise.resolve(promise).then((data) => {
           processResult(data, i)
+          // 只要有一个 reject 就 reject
         }, reject)
       }
     })
