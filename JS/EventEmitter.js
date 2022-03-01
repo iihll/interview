@@ -1,54 +1,35 @@
 class EventEmitter {
-  _events
-
   constructor() {
-    this._events = Object.create(null)
+    this.enevts = {}
   }
 
-  emit(evt, ...args) {
-    if (!this._events[evt]) return false
-
-    const fns = [...this._events[evt]]
-    fns.forEach((fn) => {
-      fn.apply(this, args)
-    })
-
-    return true
-  }
-
-  on(evt, fn) {
-    if (typeof fn !== 'function') {
-      throw new TypeError('The evet-triggered callback must be a function')
-    }
-    if(!this._events[evt]) {
-      this._events[evt] = [fn]
+  // 订阅
+  on(type, cb) {
+    if(this.enevts[type]) {
+      this.enevts[type].push(cb)
     } else {
-      this._events[evt].push(fn)
+      this.enevts[type] = [cb]
     }
   }
 
-  off(evt, fn) {
-    if(!this._events[evt]) return
-    if(!fn) {
-      this._events[evt] && (this._events[evt].length = 0)
-    }
+  // 取消订阅
+  off(type, cb) {
+    if(!this.enevts[type]) return
 
-    let cb
-    const cbLen = this._events[evt].length
-    for(let i = 0; i < cbLen; i++) {
-      cb = this._events[evt][i]
-      if(cb === fn) {
-        this._events[evt].splice(i, 1)
-        break
-      }
-    }
+    this.enevts[type] = this.enevts[type].filter(item => item !== cb)
   }
 
-  removeAllListeners(evt) {
-    if(evt) {
-      this._events[evt] && (this._events[evt].length = 0)
-    } else {
-      this._events = Object.create(null)
+  // 触发事件
+  emit(type, ...rest) {
+    this.enevts[type] && this.enevts[type].forEach(fn => fn.apply(this, rest))
+  }
+
+  // 只执行一次订阅事件
+  once(type, cb) {
+    function fn() {
+      cb()
+      this.off(type, fn)
     }
+    this.on(type, fn)
   }
 }
