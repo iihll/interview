@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+      }
+
+      body {
+        width: 100vw;
+        height: 100vh;
+        display: grid;
+        grid-template: 1fr / repeat(5, 1fr);
+        background-color: #34495e;
+      }
+
+      div {
+        grid-column: 3/4;
+        height: 50px;
+        width: 50px;
+        background-color: #f1c40f;
+        border-radius: 50%;
+        justify-self: center;
+        animation: fall 3s 2s 1 forwards;
+      }
+
+      @keyframes fall {
+        0% {
+          transform: translateY(0vh);
+          animation-timing-function: ease-in;
+        }
+
+        20% {
+          transform: translateY(20vh);
+          animation-timing-function: ease-in;
+        }
+
+        30% {
+          transform: translateY(30vh);
+          animation-timing-function: ease-in;
+        }
+
+        60% {
+          transform: translateY(60vh);
+          animation-timing-function: ease-in;
+        }
+
+        80% {
+          transform: translateY(80vh);
+          animation-timing-function: ease-in;
+        }
+
+        96% {
+          transform: translateY(96vh);
+          animation-timing-function: ease-in;
+        }
+
+        15%,
+        45%,
+        70%,
+        88%,
+        100% {
+          transform: translateY(90vh);
+          animation-timing-function: ease-out;
+        }
+      }
+
+      .test  {
+        width: 200px;
+        border: 1px solid red;
+      }
+    </style>
+  </head>
+  <body>
+    <div></div>
+    <div class="test"></div>
+
+    <script>
+      const div = document.querySelector('.test')
+      console.log(div.offsetWidth)
+    </script>
+  </body>
+</html>
