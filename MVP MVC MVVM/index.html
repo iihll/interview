@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MVC</title>
+    <style>
+      body {
+        margin: 0;
+      }
+
+      #num {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 200px;
+        height: 100px;
+        background-color: pink;
+        color: white;
+        font-size: 36px;
+        font-weight: bold;
+      }
+
+      button {
+        border: none;
+        width: 100px;
+        height: 50px;
+        padding: 0;
+        margin: 0;
+        font-size: 24px;
+        color: white;
+        cursor: pointer;
+      }
+
+      #decrease {
+        background-color: rgb(235, 167, 65);
+      }
+
+      #increase {
+        background-color: rgb(51, 50, 61);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="num"></div>
+
+    <button id="decrease">-</button><button id="increase">+</button>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+      const myapp = {}
+
+      myapp.Model = function () {
+        // 需要操作的数据
+        let val = 0
+
+        this.add = function (v) {
+          if (val < 100) val += v
+        }
+
+        this.sub = function (v) {
+          if (val > 0) val -= v
+        }
+
+        this.getVal = function () {
+          return val
+        }
+
+        // 观察者模式
+        let self = this,
+          views = []
+
+        this.register = function (view) {
+          views.push(view)
+        }
+
+        this.notify = function () {
+          for (let i = 0; i < views.length; i++) {
+            views[i].render(self)
+          }
+        }
+      }
+
+      myapp.View = function (controller) {
+        let $num = $('#num'),
+          $incBtn = $('#increase'),
+          $decBtn = $('#decrease')
+
+        this.render = function (model) {
+          $num.text(model.getVal() + 'rmb')
+        }
+
+        // 绑定事件
+        $incBtn.click(controller.increase)
+        $decBtn.click(controller.decrease)
+      }
+
+      myapp.Controller = function () {
+        let model = null,
+          view = null
+
+        this.init = function () {
+          model = new myapp.Model()
+          view = new myapp.View(this)
+
+          model.register(view)
+          model.notify()
+        }
+
+        this.increase = function () {
+          model.add(1)
+          model.notify()
+        }
+
+        this.decrease = function () {
+          model.sub(1)
+          model.notify()
+        }
+      }
+
+      let controller = new myapp.Controller()
+      controller.init()
+    </script>
+  </body>
+</html>
