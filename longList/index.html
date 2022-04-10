@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.14/vue.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <table>
+        <thead>
+          <tr>
+            <td>姓名</td>
+            <td>年龄</td>
+            <td>照片</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in list">
+            <td>{{ item.name }}</td>
+            <td>{{ item.age }}</td>
+            <td>
+              <img :src="item.img" alt="" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      const app = new Vue({
+        el: '#app',
+        data: {
+          list: [],
+        },
+        created() {
+          this.getList()
+        },
+        methods: {
+          async getList() {
+            console.time('列表时间')
+
+            const res = await fetch('http://localhost:3000/getList')
+            /** @type {Array} */
+            const list = await res.json()
+
+            const total = list.length
+            const page = 0
+            const limit = 10
+            const totalPage = Math.ceil(total / limit)
+            const f = document.createDocumentFragment()
+            const render = (page) => {
+              if (page > totalPage) return
+
+              requestAnimationFrame(() => {
+                this.list.push(
+                  ...list.slice(page * limit, page * limit + limit)
+                )
+                // for (let i = page * limit; i < page * limit + limit; i++) {
+                //   this.list.push()
+                // }
+                render(page + 1)
+              }, 0)
+            }
+
+            render(page)
+            console.timeEnd('列表时间')
+          },
+        },
+      })
+    </script>
+
+    <script>
+      test()
+
+      const test = () => {
+        console.log('test const function')
+      }
+    </script>
+  </body>
+</html>
