@@ -10,3 +10,5 @@ function debounce(fn, delay = 300) {
     }, delay);
   }
 }
+
+function test(){}
